@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Art Generator</title>
+
+    <link href="/fonts/css/all.min.css" rel="stylesheet">
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <%= yield_content "head" %>
+  </head>
+  <body>
+    <%= content %>
+
+    <hr/>
+    <div class="d-flex bg-white">
+      <div class="p-2 text-right ml-auto align-self-end" style="white-space:nowrap;">
+        <div class="d-flex bg-white">
+          <div class="p-2"><img src="/images/crystal/logo.svg" style="height:50px;width:50px;"></div> 
+          <div class="p-2 align-self-end"><a href="https://crystal-lang.org/" class="text-dark">Built With Crystal</a> <i class="fas fa-heart-circle p-2"></i></div>
+        </div>
+      </div>
+    </div>
+
+
+    <script src="/jquery/jquery.js"></script>
+    <script src="/popper/popper-utils.min.js"></script>
+    <script src="/popper/popper.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+    <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    </script>
+
+    <%= yield_content "footer" %>
+  </body>
+</html>

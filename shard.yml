@@ -1,0 +1,19 @@
+name: art-generator
+version: 0.1.0
+
+authors:
+  - Ian Rash <ian@0x42424242.in>
+
+targets:
+  app:
+    main: src/app.cr
+
+dependencies:
+  kemal:
+    github: kemalcr/kemal
+  perlin_noise:
+    github: redcodefinal/perlin_noise
+
+crystal: 0.33.0
+
+license: MIT

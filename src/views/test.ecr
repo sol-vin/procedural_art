@@ -1,0 +1,20 @@
+ <% height = 800 %>
+ <% width = 1000 %>
+ 
+ <svg height="<%= height %>" width="<%= width %>">
+  <% current_tri_size = 5 %>
+  <% tri_size = current_tri_size %>
+  <% 2.times do |g| %>
+    <% perlin = PerlinNoise.new(rand(10_000)) %>
+  
+    <% (width/tri_size).floor.to_i.times do |x| %>
+      <% (height/tri_size).floor.to_i.times do |y| %>\
+        <% if perlin.int(x, y, 2+g) == 0%>
+          <polygon points="<%= x * tri_size %>,<%= y * tri_size %> <%= x * tri_size %>,<%= y * tri_size + current_tri_size %> <%= x * tri_size + current_tri_size %>,<%= y * tri_size %>" style="fill:black;stroke-width:0" />      
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% current_tri_size += tri_size %>
+  <% end %>
+</svg> 
