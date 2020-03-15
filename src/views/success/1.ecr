@@ -1,0 +1,108 @@
+ <!-- Inward -->
+ 
+ <% tri_size = 5 %>
+ <% height = 150*tri_size %>
+ <% width = 150*tri_size %>
+ <% color_palettes = [] of Array(String) %>
+ <% color_palettes << ["#154148", "#64c5c3", "#e7b576", "#fe8f22"] %>
+ <% color_palettes << ["#222831", "#393e46", "#00adb5", "#eeeeee"] %>
+ <% color_palettes << ["#f9ed69", "#f08a5d", "#b83b5e", "#6a2c70"] %>
+ <% color_palettes << ["#f38181", "#fce38a", "#eaffd0", "#95e1d3"] %>
+ <% color_palettes << ["#252a34", "#08d9d6", "#ff2e63", "#eaeaea"] %>
+ <% color_palettes << ["#364f6b", "#3fc1c9", "#f5f5f5", "#fc5185"] %>
+ <% color_palettes << ["#a8d8ea", "#aa96da", "#fcbad3", "#ffffd2"] %>
+ <% color_palettes << ["#e3fdfd", "#cbf1f5", "#a6e3e9", "#71c9ce"] %>
+ <% color_palettes << ["#e4f9f5", "#30e3ca", "#11999e", "#40514e"] %>
+ <% color_palettes << ["#ffc7c7", "#ffe2e2", "#f6f6f6", "#8785a2"] %>
+
+ <svg height="<%= height %>" width="<%= width %>">
+  <% perlin = PerlinNoise.new(rand(1_000_000_000)) %>
+  
+  <% colors = perlin.item(2010, 2034, color_palettes) %>
+  <% bg_color = perlin.item(2211, 2234, colors) %>
+  <% colors.delete bg_color %>
+
+  <rect x="0" y="0" height="<%= height %>" width="<%= width %>" style="fill:<%= bg_color %>"/>
+  <% item = perlin.item(3010, 3010, [:none, :&, :|, :^]) %>
+  <% 5.times do |g| %>
+    <% (width/tri_size/2).floor.to_i.times do |x| %>
+      <% (height/tri_size/2).floor.to_i.times do |y| %>
+        <% x_com = x %>
+        <% y_com = y %>
+        <% if item == :& %>
+          <% x_com = 5 + (x & y) %>
+          <% y_com = 5 + (y & x) %>
+        <% elsif item == :none %>
+          <% x_com = x %>
+          <% y_com = y %>
+        <% elsif item == :| %>
+          <% x_com = 5 + (x | y) %>
+          <% y_com = 5 + (y | x) %>
+        <% elsif item == :^ %>
+          <% x_com = 5 + (x ^ y) %>
+          <% y_com = 5 + (y ^ x) %>
+        <% end %>
+
+        <% chance = 2+(2**g) %>
+        <% if perlin.int(x_com, y_com, 0, chance, 0.1234) == 0 %>
+          <% color = perlin.item(x_com, y_com, colors) %>
+          <% offset = 0 %>
+
+
+          <% origin_x = x * tri_size + offset %>
+          <% origin_y = y * tri_size + offset %>
+
+          <% left_x = origin_x - tri_size %>
+          <% right_x = origin_x + tri_size %>
+
+          <% up_y = origin_y - tri_size %>
+          <% down_y = origin_y + tri_size %>
+
+          <% mirror_origin_x = ((width/tri_size) - x) * tri_size + offset %>
+          <% mirror_origin_y = ((height/tri_size) - y) * tri_size + offset %>
+
+          <% mirror_left_x = mirror_origin_x - tri_size %>
+          <% mirror_right_x = mirror_origin_x + tri_size %>
+
+          <% mirror_up_y = mirror_origin_y - tri_size %>
+          <% mirror_down_y = mirror_origin_y + tri_size %>
+          
+          <% a1x = origin_x %>
+          <% a1y = origin_y %> 
+          <% a2x = origin_x %>
+          <% a2y = up_y %> 
+          <% a3x = left_x %>
+          <% a3y = origin_y%>
+          <polygon points="<%= a1x %>,<%= a1y %> <%= a2x %>,<%= a2y %> <%= a3x %>,<%= a3y %>" style="fill:<%= color %>;stroke-width:0"/>
+
+          <% b1x = mirror_origin_x %>
+          <% b1y = origin_y %> 
+          <% b2x = mirror_origin_x %>
+          <% b2y = up_y %> 
+          <% b3x = mirror_right_x %>
+          <% b3y = origin_y %> 
+          <polygon points="<%= b1x %>,<%= b1y %> <%= b2x %>,<%= b2y %> <%= b3x %>,<%= b3y %>" style="fill:<%= color %>;stroke-width:0"/>
+
+          <% c1x = mirror_origin_x %>
+          <% c1y = mirror_origin_y %> 
+          <% c2x = mirror_origin_x %>
+          <% c2y = mirror_down_y %> 
+          <% c3x = mirror_right_x %>
+          <% c3y = mirror_origin_y %> 
+          <polygon points="<%= c1x %>,<%= c1y %> <%= c2x %>,<%= c2y %> <%= c3x %>,<%= c3y %>" style="fill:<%= color %>;stroke-width:0"/>
+
+          <% d1x = origin_x %>
+          <% d1y = mirror_origin_y %> 
+          <% d2x = origin_x %>
+          <% d2y = mirror_down_y %> 
+          <% d3x = left_x %>
+          <% d3y = mirror_origin_y %> 
+          <polygon points="<%= d1x %>,<%= d1y %> <%= d2x %>,<%= d2y %> <%= d3x %>,<%= d3y %>" style="fill:<%= color %>;stroke-width:0"/>
+
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% tri_size *= 2 %>
+  <% end %>
+</svg> 
