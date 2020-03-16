@@ -32,7 +32,7 @@ class Art::Generator::Inward
     "cream_ale" => ["#07689f", "#a2d5f2", "#fafafa", "#ff7e67"],
   } 
 
-  TYPES =  ("a".."g")
+  TYPES = ("a".."g")
 
   property width = 100
   property height = 100
@@ -73,22 +73,22 @@ class Art::Generator::Inward
           when "b"
             x_com = (x | y)
             y_com = (y | x)
-            chance = @perlin.prng_int(x_com, y_com, 2, 8)
+            chance = @perlin.prng_int(x_com, y_com, 2, 20)
             color = @perlin.prng_item(x_com + g, y_com, colors)
           when "c"
             x_com = (x ^ y)
             y_com = (y ^ x)
-            chance = @perlin.prng_int(x_com, y_com, 2, 8)
+            chance = @perlin.prng_int(x_com, y_com, 2, 20)
             color = @perlin.item(x_com + g, y_com, colors)
           when "d"
             x_com = (x << y)
             y_com = (y << x)
-            chance = @perlin.int(x_com, y_com, 2, 8, 0.12354)
+            chance = @perlin.int(x_com, y_com, 2, 20)
             color = @perlin.item(x_com + g, y_com + g, colors)
           when "e"
             x_com = (x >> y)
             y_com = (y >> x)
-            chance = @perlin.prng_int(x_com, y_com, 2, 4, 0.12345)
+            chance = 1 + g
             color = @perlin.prng_item(x_com + g, y_com, colors)
           when "f"
             x_com = (x << y)
@@ -102,7 +102,7 @@ class Art::Generator::Inward
             color = @perlin.prng_item(x_com, y_com, colors)
           end
 
-          if @perlin.prng_int(x_com, y_com, 0, chance, 0.1234) == 0
+          if chance == 1 || @perlin.prng_int(x_com, y_com, 0, chance, 0.1234) == 0
             offset = 0
 
             origin_x = x * d_tri_size + offset

@@ -14,7 +14,7 @@ require "./generators/**"
 #  - Organise with likes
 
 get "/" do |env|
-  render_layout "inward"
+  render_layout "chromatic_aberration"
 end
 
 Kemal.run
