@@ -34,11 +34,11 @@ class Art::Generator::Inward
 
   TYPES = ("a".."g")
 
-  property width = 100
+  property width = 200
   property height = 100
   property tri_size = 8
 
-  def initialize(seed, @width = 100, @height = 100, @tri_size = 8)
+  def initialize(seed, @width = 200, @height = 100, @tri_size = 8)
     @perlin = PerlinNoise.new(seed)
   end
 
