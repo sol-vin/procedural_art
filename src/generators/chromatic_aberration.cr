@@ -31,7 +31,7 @@ class Art::Generator::ChromaticAberration
 
     (width/(square_size+padding*2)).to_i.times do |x|
       (height/(square_size+padding*2)).to_i.times do |y|
-        p_square_size = ((((@perlin.noise(x, y)+1.0)/2.0) * (square_size-smallest_square_size)) + smallest_square_size)
+        p_square_size = ((((@perlin.noise(x, y)+1.0)/2.0) * ((square_size-10)-smallest_square_size)) + smallest_square_size)
         ab_offset = (p_square_size*0.4) - (((@perlin.noise(x, y)+1.0)/2.0) * (p_square_size*0.4))
 
         p_half_square = p_square_size/2.0
@@ -60,7 +60,7 @@ class Art::Generator::ChromaticAberration
 
           svg << %Q[
             <rect height="#{p_square_size}" width="#{p_square_size}" style="fill:#{color};mix-blend-mode:#{BLEND_TYPE};">
-              <animate attributeName="rx" values="0;#{p_square_size};0" dur="10s" repeatCount="indefinite" />
+              <animate attributeName="rx" values="0;#{p_square_size/2.0};0" dur="10s" repeatCount="indefinite" />
               <animateMotion dur="5s" repeatCount="indefinite" path="M#{ab_x},#{ab_y} L#{final_ab_x},#{final_ab_y} z" />
             </rect>
         ]

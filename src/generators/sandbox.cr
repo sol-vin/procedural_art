@@ -13,13 +13,13 @@ class Art::Generator::Sandbox
     svg << %Q[<rect id="background" x="0" y="0" height="#{height}" width="#{width}" style="fill:white"/>]
 
     svg << %Q[
-      <defs>
-        <clipPath id="cut-off-bottom">
-          <rect x="0" y="0" width="200" height="100" />
-        </clipPath>
-      </defs>
-    
-      <circle cx="100" cy="100" r="100" clip-path="url(#cut-off-bottom)" />
+      <filter id="displacementFilter">
+        <feTurbulence type="turbulence" baseFrequency="0.05" numOctaves="4" result="turbulence"/>
+        <feDisplacementMap in2="turbulence" in="SourceGraphic" scale="50" xChannelSelector="R" yChannelSelector="G"/>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+      </filter>
+
+      <rect x="100" y="100" height="400" width="400" style="filter: url(#displacementFilter)"/>
     ]
 
     svg << %Q[</svg>]
