@@ -1,3 +1,4 @@
+# Inspired by https://www.openprocessing.org/sketch/566168
 module Art::Hypnos
   SIZE = 500
   SIDES = [0, 3, 4, 5, 6, 7, 8]

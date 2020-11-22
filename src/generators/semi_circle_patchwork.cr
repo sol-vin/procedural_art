@@ -1,3 +1,4 @@
+# Adapted from https://www.openprocessing.org/sketch/510598
 module Art::SemiCirclePatchwork
   COLORS = [
     ["#e2f1af", "#e3d888", "#84714f", "#5a3a31", "#31231e"],
