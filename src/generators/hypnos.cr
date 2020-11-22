@@ -1,8 +1,12 @@
 module Art::Hypnos
   SIZE = 500
   SIDES = [0, 3, 4, 5, 6, 7, 8]
-  FG_MASK_ID = "fg-mask"
-  BG_MASK_ID = "bg-mask"
+  FG_MASK_SHAPE_ID = "fg-mask-shape"
+  BG_MASK_SHAPE_ID = "bg-mask-shape"
+
+  FG_MASK_OUTER_ID = "fg-mask-outer"
+  BG_MASK_OUTER_ID = "bg-mask-outer"
+
   FG_MASK_RADIUS = 140.0
 
   MAX_STROKE_WIDTH = 5
@@ -18,21 +22,10 @@ module Art::Hypnos
 
     Celestine.draw do |ctx|
       ctx.view_box = {x: 0, y: 0, w: 500, h: 500}
-      ctx.width = 25.percent
-      ctx.height = 25.percent
+      ctx.width = 50.percent
+      ctx.height = 50.percent
 
-
-      bg_mask = ctx.rectangle(define: true) do |r|
-        r.id = BG_MASK_ID
-        r.x = 0
-        r.y = 0
-        r.width = 500
-        r.height = 500
-        r.fill = "black"
-        r.stroke = "none"
-        r
-      end
-
+      # Draw BG
       ctx.rectangle do |r|
         r.id = "bg"
         r.x = 0
@@ -44,9 +37,22 @@ module Art::Hypnos
         r
       end
 
-      fg_mask = if sides == 0
+      bg_mask_shape = ctx.rectangle(define: true) do |r|
+        r.id = BG_MASK_SHAPE_ID
+        r.x = 0
+        r.y = 0
+        r.width = 500
+        r.height = 500
+        r.fill = "black"
+        r.stroke = "none"
+        r
+      end
+
+
+
+      fg_mask_shape = if sides == 0
         ctx.circle(define: true) do |c|
-          c.id = FG_MASK_ID
+          c.id = FG_MASK_SHAPE_ID
           c.x = SIZE/2
           c.y = c.x
           c.radius = FG_MASK_RADIUS
@@ -56,7 +62,7 @@ module Art::Hypnos
         end
       else
         ctx.path(define: true) do |path|
-          path.id = FG_MASK_ID
+          path.id = FG_MASK_SHAPE_ID
 
           path.fill = "white"
           path.a_move(0, FG_MASK_RADIUS)
@@ -77,10 +83,55 @@ module Art::Hypnos
         end
       end
 
-      mask = ctx.mask do |mask|
-        mask.id = "mask"
-        mask.use bg_mask
-        mask.use(fg_mask) do |u|
+      bg_mask_outer = ctx.rectangle(define: true) do |r|
+        r.id = BG_MASK_OUTER_ID
+        r.x = 0
+        r.y = 0
+        r.width = 500
+        r.height = 500
+        r.fill = "white"
+        r.stroke = "none"
+        r
+      end
+
+      
+      fg_mask_outer = if sides == 0
+        ctx.circle(define: true) do |c|
+          c.id = FG_MASK_OUTER_ID
+          c.x = SIZE/2
+          c.y = c.x
+          c.radius = FG_MASK_RADIUS
+          c.fill = "black"
+
+          c
+        end
+      else
+        ctx.path(define: true) do |path|
+          path.id = FG_MASK_OUTER_ID
+
+          path.fill = "black"
+          path.a_move(0, FG_MASK_RADIUS)
+
+          sides.times do |x|
+            point = Celestine::FPoint.new(0, FG_MASK_RADIUS)
+            deg_inc = 360.to_f/sides
+            rp = Celestine::Math.rotate_point(point, Celestine::FPoint::ZERO, deg_inc*x)
+            path.a_line(rp.x.floor, rp.y.floor)
+          end
+
+          path.transform do |t|
+            t.translate(250, 250)
+            t
+          end
+
+          path
+        end
+      end
+
+      fg_mask = ctx.mask do |mask|
+        mask.id = "fg-mask"
+        mask.use bg_mask_shape
+        mask.use(fg_mask_shape) do |u|
           u.animate_transform do |anim|
             anim.type = "rotate"
             anim.from = "0 250 250"
@@ -94,9 +145,27 @@ module Art::Hypnos
         mask
       end
 
+      bg_mask = ctx.mask do |mask|
+        mask.id = "bg-mask"
+        mask.use bg_mask_outer
+        mask.use(fg_mask_outer) do |u|
+          u.animate_transform do |anim|
+            anim.type = "rotate"
+            anim.from = "0 250 250"
+            anim.to = "360 250 250"
+            anim.duration = "10s"
+            anim.repeat_count = "indefinite"
+            anim
+          end
+          u
+        end
+        mask
+      end
+
+      # Inner concentric circles
       ctx.group do |group|
         group.id = "concentric-circles"
-        group.set_mask mask
+        group.set_mask fg_mask
         
         (MAX_CIRCLE_SIZE / CIRCLE_SPACING.to_f).to_i.times do |x|
           circle = Celestine::Circle.new
@@ -150,6 +219,46 @@ module Art::Hypnos
           end
           group << circle
         end
+        group
+      end
+
+      # Outer lines
+      ctx.group do |group|
+        group.id = "outer-lines"
+        group.set_mask bg_mask
+
+
+        50.times do |x|
+          point = Celestine::FPoint.new(0, 500)
+          deg_inc = 360.to_f/50
+          rp = Celestine::Math.rotate_point(point, Celestine::FPoint::ZERO, deg_inc*x)
+          group.path do |path|
+            path.id = "raypath-#{x}"
+            path.stroke = "black"
+            path.stroke_width = 3.px
+            path.fill = "none"
+            path.a_move(250, 250)
+            path.r_line(rp.x.floor, rp.y.floor)
+            io = IO::Memory.new
+            20.times do
+              io << "#{rand(50) + 5} #{rand(10) + 5} "
+            end
+            path.custom_attrs["stroke-dasharray"] = io.to_s
+            path.custom_attrs["stroke-linecap"] = "round"
+
+            path.animate do |anim|
+              anim.attribute = "stroke-dashoffset"
+              random_offset = rand(100)
+              anim.from = random_offset
+              anim.to =  100000 + random_offset
+              anim.duration = "10000s"
+              anim.repeat_count = "indefinite"
+              anim
+            end
+            path
+          end
+        end
+
         group
       end
     end

@@ -2,7 +2,7 @@ version: 2.0
 shards:
   celestine:
     git: https://github.com/redcodefinal/celestine.git
-    version: 0.1.0+git.commit.eac0fe96d8afb050f638e9622012115640365543
+    version: 0.1.0+git.commit.256eed2dbbb4887955b5b486b5acc04f428fd23c
 
   exception_page:
     git: https://github.com/crystal-loot/exception_page.git
