@@ -239,12 +239,12 @@ module Art::Hypnos
             path.fill = "none"
             path.a_move(250, 250)
             path.r_line(rp.x.floor, rp.y.floor)
-            io = IO::Memory.new
+            a = [] of SIFNumber
             20.times do
-              io << "#{rand(50) + 5} #{rand(10) + 5} "
+              path.dash_array << rand(50) + 5 
+              path.dash_array << rand(10) + 5
             end
-            path.custom_attrs["stroke-dasharray"] = io.to_s
-            path.custom_attrs["stroke-linecap"] = "round"
+            path.line_cap = "round"
 
             path.animate do |anim|
               anim.attribute = "stroke-dashoffset"
