@@ -1,0 +1,4 @@
+<% content_for "title" do %> ChormaticAberration(<%= Art::ChromaticAberration.seed %>) <% end %>
+
+<%= Art::ChromaticAberration.make %>
+<% Art::ChromaticAberration.seed &+= 1 %>

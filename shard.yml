@@ -1,20 +1,20 @@
-name: art-generator
+name: art
 version: 0.1.0
 
 authors:
-  - Ian Rash <ian@0x42424242.in>
+  - Ian Rash <ian@sol.vin>
 
 targets:
   app:
     main: src/app.cr
-  sandbox:
-    main: src/sandbox.cr
 dependencies:
   kemal:
     github: kemalcr/kemal
+    branch: master
   perlin_noise:
     github: redcodefinal/perlin_noise
-
-crystal: 0.33.0
+  celestine:
+    github: redcodefinal/celestine
+crystal: 0.35.1
 
 license: MIT

@@ -1,6 +1,6 @@
 require "kemal"
 require "perlin_noise"
-
+require "celestine"
 require "./macros"
 
 require "./generators/**"
@@ -14,7 +14,28 @@ require "./generators/**"
 #  - Organise with likes
 
 get "/" do |env|
-  render_layout "sandbox" #chromatic_aberration"
+  render_layout "home"
 end
 
+get "/inward" do |env|
+  render_layout "inward"
+end
+
+get "/mineshift-s" do |env|
+  render_layout "mineshift-s"
+end
+
+get "/mineshift-c" do |env|
+  render_layout "mineshift-c"
+end
+
+get "/hypnos" do |env|
+  render_layout "hypnos"
+end
+
+get "/chromatic" do |env|
+  render_layout "chromatic"
+end
+
+Kemal.config.port = ARGV.size == 0 ? 3000 : ARGV[0].to_i
 Kemal.run

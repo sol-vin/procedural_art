@@ -1,0 +1,4 @@
+<% content_for "title" do %> MineshiftSimple(<%= Art::Mineshift::Simple.seed %>) <% end %>
+
+<%= Art::Mineshift::Simple.make %>
+<% Art::Mineshift::Simple.seed &+= 1 %>

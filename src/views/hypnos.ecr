@@ -1,0 +1,4 @@
+<% content_for "title" do %> Hypnos(<%= Art::Hypnos.seed %>) <% end %>
+
+<%= Art::Hypnos.make %>
+<% Art::Hypnos.seed &+= 1 %>
