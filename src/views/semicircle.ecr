@@ -1,0 +1,4 @@
+<% content_for "title" do %> SemiCirclePatchwork(<%= Art::SemiCirclePatchwork.seed %>) <% end %>
+
+<%= Art::SemiCirclePatchwork.make %>
+<% Art::SemiCirclePatchwork.seed &+= 1 %>

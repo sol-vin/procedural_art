@@ -37,5 +37,9 @@ get "/chromatic" do |env|
   render_layout "chromatic"
 end
 
+get "/semicircle" do |env|
+  render_layout "semicircle"
+end
+
 Kemal.config.port = ARGV.size == 0 ? 3000 : ARGV[0].to_i
 Kemal.run
