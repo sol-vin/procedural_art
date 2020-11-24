@@ -1,4 +1,4 @@
-name: art
+name: procedural_art
 version: 0.1.0
 
 authors:
@@ -7,6 +7,7 @@ authors:
 targets:
   app:
     main: src/app.cr
+
 dependencies:
   kemal:
     github: kemalcr/kemal
@@ -15,6 +16,7 @@ dependencies:
     github: redcodefinal/perlin_noise
   celestine:
     github: redcodefinal/celestine
+
 crystal: 0.35.1
 
 license: MIT

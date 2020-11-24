@@ -1,6 +1,6 @@
 require "./spec_helper"
 
-describe Art::Generator do
+describe ProceduralArt::Generator do
   # TODO: Write tests
 
   it "works" do

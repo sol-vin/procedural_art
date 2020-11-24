@@ -1,5 +1,5 @@
 # Inspired by https://www.openprocessing.org/sketch/566168
-module Art::Hypnos
+module ProceduralArt::Hypnos
   SIZE = 500
   SIDES = [0, 3, 4, 5, 6, 7, 8]
   FG_MASK_SHAPE_ID = "fg-mask-shape"
@@ -13,13 +13,13 @@ module Art::Hypnos
   MAX_STROKE_WIDTH = 5
   CIRCLE_SPACING = 10
   MAX_CIRCLE_SIZE = FG_MASK_RADIUS + (CIRCLE_SPACING * 2)
+  SECS_PER_REV = 20
 
   class_property seed = 0
 
-  @@perlin = PerlinNoise.new(1000)
-
   def self.make
-    sides = @@perlin.prng_item(@@seed+20, 10, SIDES, 4.2)
+    perlin = PerlinNoise.new(seed &+ 1)
+    sides = perlin.prng_item(@@seed+20, 10, SIDES, 4.2)
 
     Celestine.draw do |ctx|
       ctx.view_box = {x: 0, y: 0, w: 500, h: 500}
@@ -48,8 +48,6 @@ module Art::Hypnos
         r.stroke = "none"
         r
       end
-
-
 
       fg_mask_shape = if sides == 0
         ctx.circle(define: true) do |c|
@@ -86,10 +84,10 @@ module Art::Hypnos
 
       bg_mask_outer = ctx.rectangle(define: true) do |r|
         r.id = BG_MASK_OUTER_ID
-        r.x = 0
-        r.y = 0
-        r.width = 500
-        r.height = 500
+        r.x = -1000
+        r.y = -1000
+        r.width = 2000
+        r.height = 2000
         r.fill = "white"
         r.stroke = "none"
         r
@@ -137,7 +135,7 @@ module Art::Hypnos
             anim.type = "rotate"
             anim.from = "0 250 250"
             anim.to = "360 250 250"
-            anim.duration = "10s"
+            anim.duration = SECS_PER_REV.s
             anim.repeat_count = "indefinite"
             anim
           end
@@ -154,7 +152,7 @@ module Art::Hypnos
             anim.type = "rotate"
             anim.from = "0 250 250"
             anim.to = "360 250 250"
-            anim.duration = "10s"
+            anim.duration = (SECS_PER_REV/2).s
             anim.repeat_count = "indefinite"
             anim
           end
@@ -230,34 +228,43 @@ module Art::Hypnos
 
 
         50.times do |x|
-          point = Celestine::FPoint.new(0, 500)
+          point = Celestine::FPoint.new(0, 1000)
           deg_inc = 360.to_f/50
           rp = Celestine::Math.rotate_point(point, Celestine::FPoint::ZERO, deg_inc*x)
           group.path do |path|
             path.id = "raypath-#{x}"
             path.stroke = "black"
-            path.stroke_width = 3.px
+            path.stroke_width = ((perlin.noise(x, x, 11.98) * 2.0) + 2.0).px
             path.fill = "none"
             path.a_move(250, 250)
             path.r_line(rp.x.floor, rp.y.floor)
             a = [] of SIFNumber
-            20.times do
-              path.dash_array << rand(50) + 5 
-              path.dash_array << rand(10) + 5
+            20.times do |y|
+              path.dash_array << perlin.prng_int(x * y + y, 5, 55, 66.2) 
+              path.dash_array << perlin.prng_int(x * y + y, 10, 20, 81.223) 
             end
             path.line_cap = "round"
 
             path.animate do |anim|
               anim.attribute = "stroke-dashoffset"
-              random_offset = rand(100)
+              random_offset = perlin.prng_int(x, 0, 100, 201.88) 
               anim.from = random_offset
-              anim.to =  100000 + random_offset
+              anim.to =  300000 + random_offset
               anim.duration = "10000s"
               anim.repeat_count = "indefinite"
               anim
             end
             path
           end
+        end
+
+        group.animate_transform do |anim|
+          anim.type = "rotate"
+          anim.from = "360 250 250"
+          anim.to = "0 250 250"
+          anim.duration = SECS_PER_REV.s
+          anim.repeat_count = "indefinite"
+          anim
         end
 
         group

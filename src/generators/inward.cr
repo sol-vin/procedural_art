@@ -1,4 +1,4 @@
-module Art::Inward
+module ProceduralArt::Inward
   COLOR_PALETTES = {
     "substantial"     => ["#154148", "#64c5c3", "#e7b576", "#fe8f22"],
     "business"        => ["#222831", "#393e46", "#00adb5", "#eeeeee"],

@@ -1,4 +1,5 @@
-class Art::ChromaticAberration
+# Inspired by https://www.openprocessing.org/sketch/105956
+class ProceduralArt::ChromaticAberration
   property width = 1600
   property height = 800
 

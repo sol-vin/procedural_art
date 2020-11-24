@@ -1,4 +1,4 @@
-<% content_for "title" do %> Inward(<%= Art::Inward.seed %>) <% end %>
+<% content_for "title" do %> Inward(<%= ProceduralArt::Inward.seed %>) <% end %>
 
-<%= Art::Inward.make %>
-<% Art::Inward.seed &+= 1 %>
+<%= ProceduralArt::Inward.make %>
+<% ProceduralArt::Inward.seed &+= 1 %>

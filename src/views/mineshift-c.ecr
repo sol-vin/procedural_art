@@ -1,4 +1,4 @@
-<% content_for "title" do %> MineshiftComplex(<%= Art::Mineshift::Complex.seed %>) <% end %>
+<% content_for "title" do %> MineshiftComplex(<%= ProceduralArt::Mineshift::Complex.seed %>) <% end %>
 
-<%= Art::Mineshift::Complex.make %>
-<% Art::Mineshift::Complex.seed &+= 1 %>
+<%= ProceduralArt::Mineshift::Complex.make %>
+<% ProceduralArt::Mineshift::Complex.seed &+= 1 %>

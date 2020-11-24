@@ -1,4 +1,5 @@
-module Art::Mineshift::Complex
+# Inspired by https://www.reddit.com/r/PixelArt/comments/fq90ix/i_made_an_industrial_cavern_inspired_by_some/
+module ProceduralArt::Mineshift::Complex
   class_property seed : Int32 = 0
 
   def self.make_img_path(seed)

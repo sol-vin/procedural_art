@@ -1,5 +1,5 @@
 # Adapted from https://www.openprocessing.org/sketch/510598
-module Art::SemiCirclePatchwork
+module ProceduralArt::SemiCirclePatchwork
   COLORS = [
     ["#e2f1af", "#e3d888", "#84714f", "#5a3a31", "#31231e"],
     ["#ddf3b5", "#83c923", "#74a31d", "#577a15", "#39510e"],

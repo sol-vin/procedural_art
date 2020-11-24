@@ -1,4 +1,4 @@
-module Art::Mineshift::Simple
+module ProceduralArt::Mineshift::Simple
   class_property seed : Int32 = 0
 
   def self.make_img_path(seed)
