@@ -7,7 +7,8 @@ authors:
 targets:
   app:
     main: src/app.cr
-
+  benchmark:
+    main: src/benchmark.cr
 dependencies:
   kemal:
     github: kemalcr/kemal
