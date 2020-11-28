@@ -34,7 +34,8 @@ module ProceduralArt::SemiCirclePatchwork
   SCREEN_HEIGHT = 500
 
   CELL_SIZE = 20
-  PADDING = 0.2_f64
+  PADDING = 0.1_f64
+  SEMI_PADDING = 0.05_f64
 
   def self.make
     perlin = PerlinNoise.new(seed)
@@ -45,8 +46,8 @@ module ProceduralArt::SemiCirclePatchwork
 
       semicircle_left = ctx.path(define: true) do |path|
         path.id = "semicircle-l"
-        path.a_move(-PADDING, -PADDING)
-        path.a_line(-PADDING, CELL_SIZE+PADDING)
+        path.a_move(-SEMI_PADDING, -SEMI_PADDING)
+        path.a_line(-SEMI_PADDING, CELL_SIZE+SEMI_PADDING)
         path.a_arc(x: 0, y: 0, rx: 1, ry: 1)
         path.close
         
@@ -55,9 +56,9 @@ module ProceduralArt::SemiCirclePatchwork
 
       semicircle_right = ctx.path(define: true) do |path|
         path.id = "semicircle-r"
-        path.a_move(CELL_SIZE+PADDING, -PADDING)
-        path.a_line(CELL_SIZE+PADDING, CELL_SIZE+PADDING)
-        path.a_arc(x: CELL_SIZE+PADDING, y: -PADDING , rx: 1, ry: 1, flip: true)
+        path.a_move(CELL_SIZE+SEMI_PADDING, -SEMI_PADDING)
+        path.a_line(CELL_SIZE+SEMI_PADDING, CELL_SIZE+SEMI_PADDING)
+        path.a_arc(x: CELL_SIZE+SEMI_PADDING, y: -SEMI_PADDING , rx: 1, ry: 1, flip: true)
         path.close
 
         path
@@ -67,8 +68,6 @@ module ProceduralArt::SemiCirclePatchwork
       (SCREEN_WIDTH/CELL_SIZE).to_i.times do |x|
         (SCREEN_HEIGHT/CELL_SIZE).to_i.times do |y|
           grid_color = perlin.prng_item(x, y, colors, 2.4)
-          semi_circle_colors = colors.reject(grid_color)
-          rotate_90 = perlin.prng_int(x, y, 0, 2, 59.2).zero?
           ctx.rectangle do |r|
             r.x = x * CELL_SIZE - PADDING
             r.y = y * CELL_SIZE - PADDING
@@ -77,7 +76,13 @@ module ProceduralArt::SemiCirclePatchwork
             r.fill =  grid_color
             r
           end
-
+        end
+      end
+      (SCREEN_WIDTH/CELL_SIZE).to_i.times do |x|
+        (SCREEN_HEIGHT/CELL_SIZE).to_i.times do |y|
+          grid_color = perlin.prng_item(x, y, colors, 2.4)
+          semi_circle_colors = colors.reject(grid_color)
+          rotate_90 = perlin.prng_int(x, y, 0, 2, 59.2).zero?
           ctx.use(semicircle_left) do |u|
             u.x = x * CELL_SIZE - PADDING
             u.y = y * CELL_SIZE - PADDING

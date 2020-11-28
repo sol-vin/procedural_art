@@ -1,4 +1,6 @@
 <% content_for "title" do %> Hypnos(<%= ProceduralArt::Hypnos.seed %>) <% end %>
 
+<div style="width:50%; height:50%;">
 <%= ProceduralArt::Hypnos.make %>
 <% ProceduralArt::Hypnos.seed &+= 1 %>
+</div>
