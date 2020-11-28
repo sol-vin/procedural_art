@@ -28,30 +28,28 @@ module ProceduralArt::SemiCirclePatchwork
     ["#ad2831", "#800e13", "#640d14", "#38040e", "#250902"],
   ]
 
-  class_property seed = 0
+  class_property seed = 1
 
   SCREEN_WIDTH = 500
   SCREEN_HEIGHT = 500
 
-  CELL_SIZE = 50
+  CELL_SIZE = 20
   PADDING = 0.2_f64
 
   def self.make
-    perlin = PerlinNoise.new(1 &+ seed)
+    perlin = PerlinNoise.new(seed)
     colors = perlin.prng_item(100, COLORS, 4.2)
 
     Celestine.draw do |ctx|
-      ctx.view_box = {x: 0, y: 0, w: SCREEN_WIDTH, h: SCREEN_HEIGHT}
-      ctx.width = 50.percent
-      ctx.height = 50.percent
+      ctx.view_box = {x: 0, y: 0, w: SCREEN_WIDTH/2, h: SCREEN_HEIGHT/2}
 
       semicircle_left = ctx.path(define: true) do |path|
         path.id = "semicircle-l"
         path.a_move(-PADDING, -PADDING)
         path.a_line(-PADDING, CELL_SIZE+PADDING)
-        path.a_arc(x: 0, y: 0 , rx: 1, ry: 1)
+        path.a_arc(x: 0, y: 0, rx: 1, ry: 1)
         path.close
-
+        
         path
       end
 

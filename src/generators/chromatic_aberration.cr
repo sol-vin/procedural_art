@@ -11,7 +11,7 @@ class ProceduralArt::ChromaticAberration
 
   BLEND_TYPE = "difference"
 
-  class_property seed = 0
+  class_property seed = 1
   def self.make
     ca = self.new(@@seed)
     ca.make
@@ -83,15 +83,18 @@ class ProceduralArt::ChromaticAberration
               rect.animate do |anim|
                 anim.attribute = "rx"
                 anim.values << 0
-                anim.values << p_half_square.to_i
+                anim.values << p_half_square.to_f
                 anim.values << 0
-                anim.duration = (@perlin.prng_int(90, 90, 0, 2, 0.5152) == 0 ? 10.s : ab_timing.s)
+                anim.duration = (@perlin.prng_int(90, 90, 0, 2, 0.5152) == 0 ? 10 : ab_timing)
+                anim.duration_units = "s"
+
                 anim.repeat_count = "indefinite"
                 anim
               end
 
               rect.animate_motion do |anim|
-                anim.duration = 5.s
+                anim.duration = 5
+                anim.duration_units = "s"
                 anim.repeat_count = "indefinite"
 
                 anim.mpath do |path|

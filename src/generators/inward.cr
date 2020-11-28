@@ -35,7 +35,7 @@ module ProceduralArt::Inward
   TYPES = ("a".."g")
 
 
-  class_property seed : Int32 = 0
+  class_property seed : Int32 = 1
 
   def self.make_img_path(seed)
     "/test/inward/#{seed}.svg"

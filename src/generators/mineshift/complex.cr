@@ -1,6 +1,6 @@
 # Inspired by https://www.reddit.com/r/PixelArt/comments/fq90ix/i_made_an_industrial_cavern_inspired_by_some/
 module ProceduralArt::Mineshift::Complex
-  class_property seed : Int32 = 0
+  class_property seed : Int32 = 1
 
   def self.make_img_path(seed)
     "/test/mineshift/#{seed}.svg"
@@ -126,10 +126,10 @@ module ProceduralArt::Mineshift::Complex
 
         group.rectangle do |window|
           window.id = "window-square-bar-y-#{level}"
-          window.width = window_size/4
-          window.height = window_size + 2 # offset one to avoid masking lines
+          window.width = w_w = window_size/4
+          window.height = w_h = window_size + 2 # offset one to avoid masking lines
 
-          window.x = window_padding + (window_size/2) - (window.width.to_i/2)
+          window.x = window_padding + (window_size/2) - (w_w.to_i/2)
           window.y = window_padding - 2 # offset plus one to avoid masking lines
 
           window.fill = "white"
@@ -145,10 +145,10 @@ module ProceduralArt::Mineshift::Complex
 
         group.rectangle do |window|
           window.id = "window-square-bar-x-#{level}"
-          window.height = window_size/4
+          window.height = w_h = window_size/4
           window.width = window_size + 2 # offset one to avoid masking lines
 
-          window.y = window_padding + (window_size/2) - (window.height.to_i/2)
+          window.y = window_padding + (window_size/2) - (w_h.to_i/2)
           window.x = window_padding - 2 # offset plus one to avoid masking lines
 
           window.fill = "white"
@@ -172,11 +172,11 @@ module ProceduralArt::Mineshift::Complex
         group.use("basic-square-window-#{level}")
 
         group.rectangle do |window|
-          window.height = window_size/2
-          window.width = window_size/2 # offset one to avoid masking lines
+          window.height = w_h = window_size/2
+          window.width = w_w = window_size/2 # offset one to avoid masking lines
 
-          window.y = LEVEL_DATA[level][:block_size]/2 - (window.height.to_i/2)
-          window.x = LEVEL_DATA[level][:block_size]/2 - (window.width.to_i/2)
+          window.y = LEVEL_DATA[level][:block_size]/2 - (w_h.to_i/2)
+          window.x = LEVEL_DATA[level][:block_size]/2 - (w_w.to_i/2)
 
           window.fill = "white"
           window
@@ -257,59 +257,58 @@ module ProceduralArt::Mineshift::Complex
     end
   end
 
-  def self.make_center_mask_rectangles(level : Int32)
-    mask_rectangles = [] of Celestine::Rectangle
+  def self.make_center_mask_rectangles(level : Int32) : Array(ProceduralArt::Mineshift::Rectangle)
+    mask_rectangles = [] of ProceduralArt::Mineshift::Rectangle
 
     center = (WIDTH/2).to_i
     current_height = 0
     # Perlin counter (provides random values by increasing seed)
-    p_counter = 1
-
+    p_counter = 0
     # Creates the middle mask rectangles
     until current_height > FRAME_HEIGHT
+      mask_rect_bb = ProceduralArt::Mineshift::Rectangle.new
       mask_rect = Celestine::Rectangle.new
-      mask_rect.id = "mask-rect-#{level}-#{p_counter}"
+
 
       additional_block_spacing = @@perlin.prng_int(p_counter, current_height, level + 1, 0, LEVEL_DATA[level][:max_blocks], BLOCK_SPACING_SEED) * LEVEL_DATA[level][:block_size]
-      mask_rect.width = LEVEL_DATA[level][:max_distance] - additional_block_spacing
-      mask_rect.height = LEVEL_DATA[level][:block_size] + 1 # Offset by one because of svg antialiasing issues
-
-      position_x = center - (mask_rect.width.to_i/2).to_i
-      deviation = (@@perlin.int(current_height, p_counter, level + 1, -LEVEL_DATA[level][:deviation], LEVEL_DATA[level][:deviation], CENTER_MASK_DEVIATION_SEED) * LEVEL_DATA[level][:block_size])
-      mask_rect.y = current_height - 1 # Offset by one to ensure lines don't draw (svg antialiasing)
-      mask_rect.x = position_x - deviation
-      mask_rect.fill = "black"
-      current_height += LEVEL_DATA[level][:block_size]
       p_counter += 1
+      mask_rect.width = mask_rect_bb.width = LEVEL_DATA[level][:max_distance] - additional_block_spacing
+      mask_rect.height = mask_rect_bb.height = LEVEL_DATA[level][:block_size] + 1 # Offset by one because of svg antialiasing issues
+       
+      position_x = center - (mask_rect_bb.width.to_i/2).to_i
+      deviation = (@@perlin.int(current_height, p_counter, level + 1, -LEVEL_DATA[level][:deviation], LEVEL_DATA[level][:deviation], CENTER_MASK_DEVIATION_SEED) * LEVEL_DATA[level][:block_size])
+      mask_rect.y = mask_rect_bb.y = current_height - 1 # Offset by one to ensure lines don't draw (svg antialiasing)
+      mask_rect.x = mask_rect_bb.x =position_x - deviation
+      current_height += LEVEL_DATA[level][:block_size]
 
-      mask_rectangles << mask_rect
+      mask_rectangles << mask_rect_bb
     end
     mask_rectangles
   end
 
   def self.make_windows(level, mask_center_rects)
-    window_bounding_boxes = [] of Celestine::Rectangle
+    window_bounding_boxes = [] of ProceduralArt::Mineshift::Rectangle
     window_uses = [] of Celestine::Use
 
     mask_center_rects.each_with_index do |center_mask_rect, index|
       # Makes windows
-      window_x_left = center_mask_rect.left - LEVEL_DATA[level][:block_size]
-      window_x_right = center_mask_rect.right
+      window_x_left = center_mask_rect.x.as(Number) - LEVEL_DATA[level][:block_size]
+      window_x_right = center_mask_rect.x.as(Number) + center_mask_rect.width.as(Number)
 
       [window_x_left, window_x_right].each_with_index do |window_x, window_side|
         while (window_side == 0 && window_x > 0) || (window_side == 1 && (window_x + LEVEL_DATA[level][:block_size]) < WIDTH)
-          if (@@perlin.int(window_x, window_side + center_mask_rect.top + 1, 0, 100, 4.2929) < 80)
-            scale_multiplier = @@perlin.prng_int(window_x, level, window_side + center_mask_rect.top, 1, 3, WINDOW_SCALE_SEED)
+          if (@@perlin.int(window_x.to_i, window_side + center_mask_rect.y.as(Number).to_i + 1, 0, 100, 4.2929_f32) < 80)
+            scale_multiplier = @@perlin.prng_int(window_x.to_i, level, window_side + center_mask_rect.y.as(Number).to_i, 1, 3, WINDOW_SCALE_SEED)
             window = Celestine::Rectangle.new
             window.width = LEVEL_DATA[level][:block_size]*scale_multiplier
             window.height = LEVEL_DATA[level][:block_size]*scale_multiplier
             window.x = window_x
-            window.y = center_mask_rect.top
+            window.y = center_mask_rect.y.as(Number)
 
-            if window.bottom < FRAME_HEIGHT && !Celestine::Collision.check?(window, mask_center_rects) && !Celestine::Collision.check?(window, window_bounding_boxes)
+            if window.y.as(Number) + window.height.as(Number) < FRAME_HEIGHT && !Celestine::Collision.check?(window, mask_center_rects) && !Celestine::Collision.check?(window, window_bounding_boxes)
               window_bounding_boxes << window
-              use = Celestine::Use.new(@@perlin.prng_item(level, window_x.to_i, window_side + center_mask_rect.top, window_assets[level], WINDOW_ASSET_SEED))
-              use.transform { |t| t.translate(window_x, center_mask_rect.top); t.scale(scale_multiplier, scale_multiplier); t }
+              use = Celestine::Use.new(@@perlin.prng_item(level, window_x.to_i, window_side + center_mask_rect.y.as(Number), window_assets[level], WINDOW_ASSET_SEED))
+              use.transform { |t| t.translate(window_x, center_mask_rect.y.as(Number)); t.scale(scale_multiplier, scale_multiplier); t }
               window_uses << use
             end
           end
@@ -331,7 +330,7 @@ module ProceduralArt::Mineshift::Complex
       points = [] of Int32
       rope_x_padding = (LEVEL_DATA[level][:block_size]*0.5).to_i
       4.times do |x|
-        points << @@perlin.prng_int(level, index + x, center_mask_rect.left + rope_x_padding, center_mask_rect.right - rope_x_padding, 0.0695098_f32*(level + 1))
+        points << @@perlin.prng_int(level, index + x, center_mask_rect.x.as(Number) + rope_x_padding, center_mask_rect.x.as(Number) + center_mask_rect.width.as(Number) - rope_x_padding, 0.0695098_f32*(level + 1))
       end
 
       min_rope_segment = (LEVEL_DATA[level][:block_size]/2).to_i
@@ -341,15 +340,15 @@ module ProceduralArt::Mineshift::Complex
       # Ensure rope has something to hang from
       points.each do |x|
         rope_width = (level*0.25)*@@perlin.prng_int(level + x, index + x, 1, 4, 0.32323) + 1
-        if (index != 0 && !Celestine::Collision.check?(mask_center_rects, Celestine::FPoint.new(x, center_mask_rect.top - 5)) && !Celestine::Collision.check?(mask_center_rects, Celestine::FPoint.new(x + rope_width, center_mask_rect.top - 5)))
+        if (index != 0 && !Celestine::Collision.check?(mask_center_rects, Celestine::FPoint.new(x, center_mask_rect.x.as(Number) - 5)) && !Celestine::Collision.check?(mask_center_rects, Celestine::FPoint.new(x + rope_width, center_mask_rect.y.as(Number) - 5)))
           rope = Celestine::Rectangle.new
           rope.x = x
-          rope.y = center_mask_rect.top - 1
+          rope.y = r_y = center_mask_rect.x.as(Number) - 1
 
           rope.width = rope_width
           rope.fill = "white"
 
-          rope_end_point = Celestine::FPoint.new(x, rope.y.to_i + min_rope_segment)
+          rope_end_point = Celestine::FPoint.new(x, r_y + min_rope_segment)
           rope_height = 0
           while (rope_height + LEVEL_DATA[level][:block_size] < max_rope_height) &&
                 Celestine::Collision.check?(mask_center_rects, Celestine::FPoint.new(rope_end_point.x, rope_end_point.y + LEVEL_DATA[level][:block_size])) &&
@@ -376,7 +375,7 @@ module ProceduralArt::Mineshift::Complex
       # Draw bridges, but only level 0 and 1
       if level < 2
         # Center point for the bridge
-        mask_center_point = Celestine::FPoint.new(rect.x.to_f + rect.width.to_f/2, rect.y.to_f + rect.height.to_f/2)
+        mask_center_point = Celestine::FPoint.new(rect.x.as(Number).to_f + rect.width.as(Number).to_f/2, rect.y.as(Number).to_f + rect.height.as(Number).to_f/2)
         # Angle the bridge is rotated at
         bridge_angle = @@perlin.prng_int(level, index, -30, 30, 0.83772)
         # Height of the bridge

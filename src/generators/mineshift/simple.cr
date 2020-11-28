@@ -1,14 +1,7 @@
+require "./rectangle"
+
 module ProceduralArt::Mineshift::Simple
-  class_property seed : Int32 = 0
-
-  def self.make_img_path(seed)
-    "/test/mineshift/#{seed}.svg"
-  end
-
-  def self.make_new_img
-    @@seed &+= 1
-    File.open("./bin" + make_img_path(@@seed), "w+") { |f| f.puts self.make }
-  end
+  class_property seed : Int32 = 1
 
   COLORS = [
     {bg: "#e2f1af", levels: ["#e3d888", "#84714f", "#5a3a31", "#31231e"]},
@@ -90,31 +83,30 @@ module ProceduralArt::Mineshift::Simple
   @@perlin = PerlinNoise.new(0)
 
   def self.make_center_mask_rectangles(level : Int32)
-    mask_rectangles = [] of Celestine::Rectangle
+    mask_rectangles = [] of ProceduralArt::Mineshift::Rectangle
 
     center = (WIDTH/2).to_i
     current_height = 0
     # Perlin counter (provides random values by increasing seed)
-    p_counter = 1
-
+    p_counter = 0
     # Creates the middle mask rectangles
     until current_height > FRAME_HEIGHT
+      mask_rect_bb = ProceduralArt::Mineshift::Rectangle.new
       mask_rect = Celestine::Rectangle.new
-      mask_rect.id = "mask-rect-#{level}-#{p_counter}"
+
 
       additional_block_spacing = @@perlin.prng_int(p_counter, current_height, level + 1, 0, LEVEL_DATA[level][:max_blocks], BLOCK_SPACING_SEED) * LEVEL_DATA[level][:block_size]
-      mask_rect.width = LEVEL_DATA[level][:max_distance] - additional_block_spacing
-      mask_rect.height = LEVEL_DATA[level][:block_size] + 1 # Offset by one because of svg antialiasing issues
-
-      position_x = center - (mask_rect.width.to_i/2).to_i
-      deviation = (@@perlin.int(current_height, p_counter, level + 1, -LEVEL_DATA[level][:deviation], LEVEL_DATA[level][:deviation], CENTER_MASK_DEVIATION_SEED) * LEVEL_DATA[level][:block_size])
-      mask_rect.y = current_height - 1 # Offset by one to ensure lines don't draw (svg antialiasing)
-      mask_rect.x = position_x - deviation
-      mask_rect.fill = "black"
-      current_height += LEVEL_DATA[level][:block_size]
       p_counter += 1
+      mask_rect.width = mask_rect_bb.width = LEVEL_DATA[level][:max_distance] - additional_block_spacing
+      mask_rect.height = mask_rect_bb.height = LEVEL_DATA[level][:block_size] + 1 # Offset by one because of svg antialiasing issues
+       
+      position_x = center - (mask_rect_bb.width.to_i/2).to_i
+      deviation = (@@perlin.int(current_height, p_counter, level + 1, -LEVEL_DATA[level][:deviation], LEVEL_DATA[level][:deviation], CENTER_MASK_DEVIATION_SEED) * LEVEL_DATA[level][:block_size])
+      mask_rect.y = mask_rect_bb.y = current_height - 1 # Offset by one to ensure lines don't draw (svg antialiasing)
+      mask_rect.x = mask_rect_bb.x =position_x - deviation
+      current_height += LEVEL_DATA[level][:block_size]
 
-      mask_rectangles << mask_rect
+      mask_rectangles << mask_rect_bb
     end
     mask_rectangles
   end
@@ -157,7 +149,17 @@ module ProceduralArt::Mineshift::Simple
 
           center_rectangles = make_center_mask_rectangles(level)
 
-          center_rectangles.each { |r| mask << r }
+          center_rectangles.each_with_index do |r, i| 
+            rect = Celestine::Rectangle.new
+            rect.id = "mask-rect-#{level}-#{i}"
+            rect.fill = "black"
+            rect.x = r.x
+            rect.y = r.y
+            rect.width = r.width
+            rect.height = r.height
+
+            mask << rect
+          end
 
           ctx.group do |group|
             lvl_rect = group.rectangle do |rect|
@@ -169,7 +171,8 @@ module ProceduralArt::Mineshift::Simple
               rect.fill = colors[:levels][level]
               rect.set_mask mask
               group.animate_motion do |anim|
-                anim.duration = ((((3 - level)/3.0)*200) + 40).s
+                anim.duration = ((((3 - level)/3.0)*200) + 40)
+                anim.duration_units = "s"
                 anim.repeat_count = "indefinite"
                 anim.mpath do |path|
                   path.r_move(0, 0)

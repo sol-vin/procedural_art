@@ -23,8 +23,6 @@ module ProceduralArt::Hypnos
 
     Celestine.draw do |ctx|
       ctx.view_box = {x: 0, y: 0, w: 500, h: 500}
-      ctx.width = 50.percent
-      ctx.height = 50.percent
 
       # Draw BG
       ctx.rectangle do |r|
@@ -131,11 +129,15 @@ module ProceduralArt::Hypnos
         mask.id = "fg-mask"
         mask.use bg_mask_shape
         mask.use(fg_mask_shape) do |u|
-          u.animate_transform do |anim|
-            anim.type = "rotate"
-            anim.from = "0 250 250"
-            anim.to = "360 250 250"
-            anim.duration = SECS_PER_REV.s
+          u.animate_transform_rotate do |anim|
+            anim.use_from = true
+            anim.use_to = true
+            anim.from_angle = 0
+            anim.to_angle = 360
+            anim.from_origin_x = anim.from_origin_y = anim.to_origin_x = anim.to_origin_y = 250
+
+            anim.duration = SECS_PER_REV
+            anim.duration_units = "s"
             anim.repeat_count = "indefinite"
             anim
           end
@@ -148,11 +150,15 @@ module ProceduralArt::Hypnos
         mask.id = "bg-mask"
         mask.use bg_mask_outer
         mask.use(fg_mask_outer) do |u|
-          u.animate_transform do |anim|
-            anim.type = "rotate"
-            anim.from = "0 250 250"
-            anim.to = "360 250 250"
-            anim.duration = (SECS_PER_REV/2).s
+          u.animate_transform_rotate do |anim|
+            anim.use_from = true
+            anim.use_to = true
+            anim.from_angle = 0
+            anim.to_angle = 360
+            anim.from_origin_x = anim.from_origin_y = anim.to_origin_x = anim.to_origin_y = 250
+
+            anim.duration = (SECS_PER_REV/2)
+            anim.duration_units = "s"
             anim.repeat_count = "indefinite"
             anim
           end
@@ -174,17 +180,21 @@ module ProceduralArt::Hypnos
           if x.zero?
             circle.animate do |anim|
               anim.attribute = Celestine::Circle::Attrs::STROKE_WIDTH
-              anim.duration = "5s"
-              anim.values = [0, MAX_STROKE_WIDTH.px, MAX_STROKE_WIDTH.px] of SIFNumber
+              anim.duration = 5
+              anim.duration_units = "s"
+              anim.values = [0.0, MAX_STROKE_WIDTH.to_f, MAX_STROKE_WIDTH.to_f] of Float64
               anim.repeat_count = "indefinite"
               anim
             end
 
             circle.animate do |anim|
               anim.attribute = Celestine::Circle::Attrs::RADIUS
-              anim.duration = "5s"
+              anim.duration = 5
+              anim.duration_units = "s"
               anim.from = 0
-              anim.to = 10.px
+              anim.to = 10
+              anim.to_units = "px"
+
               anim.repeat_count = "indefinite"
               anim
             end
@@ -192,24 +202,28 @@ module ProceduralArt::Hypnos
             group << circle
 
             circle2 = Celestine::Circle.new
-            circle2.stroke_width = MAX_STROKE_WIDTH.px
+            circle2.stroke_width = MAX_STROKE_WIDTH
+            circle2.stroke_width_units = "px"
             circle2.stroke = "red"
             circle2.fill = "none"
             circle2.x = circle2.y = SIZE/2
             circle2.animate do |anim|
               anim.attribute = Celestine::Circle::Attrs::RADIUS
-              anim.duration = "5s"
+              anim.duration = 5
+              anim.duration_units = "s"
               anim.from = 0
               anim.to = CIRCLE_SPACING
               anim.repeat_count = "indefinite"
               anim
             end
           else
-            circle.stroke_width = MAX_STROKE_WIDTH.px
+            circle.stroke_width = MAX_STROKE_WIDTH
+            circle.stroke_width_units = "px"
 
             circle.animate do |anim|
               anim.attribute = Celestine::Circle::Attrs::RADIUS
-              anim.duration = "5s"
+              anim.duration = 5
+              anim.duration_units = "s"
               anim.from = x * CIRCLE_SPACING
               anim.to = (x+1) * CIRCLE_SPACING
               anim.repeat_count = "indefinite"
@@ -234,14 +248,14 @@ module ProceduralArt::Hypnos
           group.path do |path|
             path.id = "raypath-#{x}"
             path.stroke = "black"
-            path.stroke_width = ((perlin.noise(x, x, 11.98) * 2.0) + 2.0).px
+            path.stroke_width = ((perlin.noise(x, x, 11.98) * 2.0) + 2.0).floor.to_f64
+            path.stroke_width_units = "px"
             path.fill = "none"
             path.a_move(250, 250)
             path.r_line(rp.x.floor, rp.y.floor)
-            a = [] of SIFNumber
             20.times do |y|
-              path.dash_array << perlin.prng_int(x * y + y, 5, 55, 66.2) 
-              path.dash_array << perlin.prng_int(x * y + y, 10, 20, 81.223) 
+              path.dash_array << perlin.prng_int(x * y + y, 5, 55, 66.2).floor.to_f64
+              path.dash_array << perlin.prng_int(x * y + y, 10, 20, 81.223).floor.to_f64
             end
             path.line_cap = "round"
 
@@ -250,7 +264,8 @@ module ProceduralArt::Hypnos
               random_offset = perlin.prng_int(x, 0, 100, 201.88) 
               anim.from = random_offset
               anim.to =  300000 + random_offset
-              anim.duration = "10000s"
+              anim.duration = 10000
+              anim.duration_units = "s"
               anim.repeat_count = "indefinite"
               anim
             end
@@ -258,11 +273,15 @@ module ProceduralArt::Hypnos
           end
         end
 
-        group.animate_transform do |anim|
-          anim.type = "rotate"
-          anim.from = "360 250 250"
-          anim.to = "0 250 250"
-          anim.duration = SECS_PER_REV.s
+        group.animate_transform_rotate do |anim|
+          anim.use_from = true
+          anim.use_to = true
+          anim.from_angle = 360
+          anim.to_angle = 0
+          anim.from_origin_x = anim.from_origin_y = anim.to_origin_x = anim.to_origin_y = 250
+
+          anim.duration = (SECS_PER_REV)
+          anim.duration_units = "s"
           anim.repeat_count = "indefinite"
           anim
         end
