@@ -1,4 +1,6 @@
 require "kemal"
+require "celestine"
+
 require "./macros"
 require "./procedural_art"
 

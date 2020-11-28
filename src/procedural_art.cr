@@ -1,5 +1,4 @@
 require "perlin_noise"
-require "celestine"
 
 # require "./generators/**"
 require "./generators/mineshift/simple"
