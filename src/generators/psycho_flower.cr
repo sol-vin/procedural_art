@@ -4,6 +4,10 @@ module ProceduralArt::PsychoFlower
 
   MIN_CIRCLE_SIZE = 10
   MAX_CIRCLE_SIZE = 20
+  
+  MAX_WAIT = 0.5
+  INFLATE_UP = 0.1
+  INFLATE_DOWN = 0.05
 
   def self.make
     Celestine.draw do |ctx|
@@ -34,10 +38,10 @@ module ProceduralArt::PsychoFlower
               distance = Math.sqrt((middle_x - circle.x.as(Number))**2 + (middle_y - circle.y.as(Number))**2).floor
               
               a.key_times << 0.0
-              start_time = (distance/SCREEN_SIZE) * 0.5
+              start_time = (distance/SCREEN_SIZE) * MAX_WAIT
               a.key_times << start_time
-              a.key_times << start_time + 0.3
-              a.key_times << start_time + 0.4
+              a.key_times << start_time + INFLATE_UP
+              a.key_times << start_time + INFLATE_UP + INFLATE_DOWN
               a.key_times << 1.0
 
               # ctx.text do |t|
@@ -103,10 +107,10 @@ module ProceduralArt::PsychoFlower
               distance = Math.sqrt((middle_x - circle.x.as(Number))**2 + (middle_y - circle.y.as(Number))**2).floor
               
               a.key_times << 0.0
-              start_time = (distance/SCREEN_SIZE) * 0.5
+              start_time = (distance/SCREEN_SIZE) * MAX_WAIT
               a.key_times << start_time
-              a.key_times << start_time + 0.3
-              a.key_times << start_time + 0.4
+              a.key_times << start_time + INFLATE_UP
+              a.key_times << start_time + INFLATE_UP + INFLATE_DOWN
               a.key_times << 1.0
 
               # ctx.text do |t|
