@@ -44,5 +44,9 @@ get "/semicircle" do |env|
   render_layout "semicircle"
 end
 
+get "/psychoflower" do |env|
+  render_layout "psychoflower"
+end
+
 Kemal.config.port = ARGV.size == 0 ? 3000 : ARGV[0].to_i
 Kemal.run

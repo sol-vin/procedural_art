@@ -182,7 +182,7 @@ module ProceduralArt::Hypnos
               anim.attribute = Celestine::Circle::Attrs::STROKE_WIDTH
               anim.duration = 5
               anim.duration_units = "s"
-              anim.values = [0.0, MAX_STROKE_WIDTH.to_f, MAX_STROKE_WIDTH.to_f] of Float64
+              anim.values = [0.0, MAX_STROKE_WIDTH.to_f, MAX_STROKE_WIDTH.to_f] of SIFNumber
               anim.repeat_count = "indefinite"
               anim
             end

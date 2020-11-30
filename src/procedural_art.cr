@@ -6,6 +6,8 @@ require "./generators/semi_circle_patchwork"
 require "./generators/inward"
 require "./generators/hypnos"
 require "./generators/splash_effect"
+require "./generators/psycho_flower"
+
 
 require "./generators/chromatic_aberration"
 
