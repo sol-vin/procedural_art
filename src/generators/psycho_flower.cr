@@ -5,9 +5,9 @@ module ProceduralArt::PsychoFlower
   MIN_CIRCLE_SIZE = 10
   MAX_CIRCLE_SIZE = 20
   
-  MAX_WAIT = 0.5
-  INFLATE_UP = 0.1
-  INFLATE_DOWN = 0.05
+  MAX_WAIT = 0.7
+  INFLATE_UP = 0.05
+  INFLATE_DOWN = 0.025
 
   def self.make
     Celestine.draw do |ctx|
@@ -43,16 +43,6 @@ module ProceduralArt::PsychoFlower
               a.key_times << start_time + INFLATE_UP
               a.key_times << start_time + INFLATE_UP + INFLATE_DOWN
               a.key_times << 1.0
-
-              # ctx.text do |t|
-              #   t.text = distance.to_s
-              #   t.x = circle.x.as(Number)-5
-              #   t.y = circle.y
-              #   t.font_size = 5
-              #   t.font_size_units = "px"
-              #   t
-              # end
-
 
               a.duration = 5
               a.duration_units = "s"
@@ -112,15 +102,6 @@ module ProceduralArt::PsychoFlower
               a.key_times << start_time + INFLATE_UP
               a.key_times << start_time + INFLATE_UP + INFLATE_DOWN
               a.key_times << 1.0
-
-              # ctx.text do |t|
-              #   t.text = distance.to_s
-              #   t.x = circle.x.as(Number)-5
-              #   t.y = circle.y
-              #   t.font_size = 5
-              #   t.font_size_units = "px"
-              #   t
-              # end
 
 
               a.duration = 5

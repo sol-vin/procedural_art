@@ -1,0 +1,6 @@
+<% content_for "title" do %> PolarSpins(<%= ProceduralArt::PolarSpins.seed %>) <% end %>
+
+<div style="width:50%; height:50%;">
+<%= ProceduralArt::PolarSpins.make %>
+<% ProceduralArt::PolarSpins.seed &+= 1 %>
+</div>

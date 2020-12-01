@@ -48,5 +48,10 @@ get "/psychoflower" do |env|
   render_layout "psychoflower"
 end
 
+
+get "/polarspins" do |env|
+  render_layout "polar_spins"
+end
+
 Kemal.config.port = ARGV.size == 0 ? 3000 : ARGV[0].to_i
 Kemal.run
