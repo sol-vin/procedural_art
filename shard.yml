@@ -16,7 +16,7 @@ dependencies:
   perlin_noise:
     github: redcodefinal/perlin_noise
   celestine:
-    github: redcodefinal/celestine
+    github: celestinecr/celestine
 
 crystal: 0.35.1
 

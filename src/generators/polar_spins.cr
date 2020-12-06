@@ -1,4 +1,3 @@
-# Inspired by https://www.openprocessing.org/sketch/941217
 module ProceduralArt::PolarSpins
   SCREEN_SIZE = 500
 

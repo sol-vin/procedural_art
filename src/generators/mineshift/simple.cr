@@ -142,6 +142,16 @@ module ProceduralArt::Mineshift::Simple
       end
 
       MAX_LEVELS.times do |level|
+        ctx.filter do |f|
+          f.id = "filter-#{level}"
+          f.blur do |b|
+            b.input = Celestine::Filter::SOURCE_GRAPHIC
+            b.standard_deviation = level
+            b
+          end
+          f
+        end
+
         ctx.mask do |mask|
           mask.id = "lvl#{level}-mask"
 
@@ -188,6 +198,8 @@ module ProceduralArt::Mineshift::Simple
               use.y = (FRAME_HEIGHT) - 2
               use
             end
+
+            group.set_filter "filter-#{level}"
 
             group
           end

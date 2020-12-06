@@ -9,6 +9,7 @@ require "./generators/splash_effect"
 require "./generators/psycho_flower"
 require "./generators/polar_spins"
 require "./generators/chromatic_aberration"
+require "./generators/subdivision"
 
 
 

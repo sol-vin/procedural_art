@@ -44,7 +44,7 @@ module ProceduralArt::PsychoFlower
               a.key_times << start_time + INFLATE_UP + INFLATE_DOWN
               a.key_times << 1.0
 
-              a.duration = 5
+              a.duration = 5.4
               a.duration_units = "s"
               a.repeat_count = "indefinite"
               a

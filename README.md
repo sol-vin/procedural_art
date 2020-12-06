@@ -1,18 +1,28 @@
-# art-generator
+# procedural_art
 
-TODO: Write a description here
+A bunch of art and stuff I made using [Celestine](github.com/redcodefinal/celestine).
 
 ## Installation
 
-TODO: Write installation instructions here
+Can be used as a library if you want to embed this in a web app.
+
+```
+dependencies:
+  procedural_art:
+    github: redcodefinal/procedural_art
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+Compile and run the app using
+
+```
+shards build app && ./bin/app
+```
 
 ## Development
 
-TODO: Write development instructions here
+No touchy, this is used to test `Celestine`
 
 ## Contributing
 
