@@ -1,0 +1,6 @@
+<% content_for "title" do %> Retrowave(<%= ProceduralArt::Retrowave.seed %>) <% end %>
+
+<div style="width:100%; height:100%;">
+<%= ProceduralArt::Retrowave.make %>
+<% ProceduralArt::Retrowave.seed &+= 1 %>
+</div>

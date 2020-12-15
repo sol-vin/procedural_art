@@ -57,5 +57,10 @@ get "/subdivision" do |env|
   render_layout "subdivision"
 end
 
+
+get "/retrowave" do |env|
+  render_layout "retrowave"
+end
+
 Kemal.config.port = ARGV.size == 0 ? 3000 : ARGV[0].to_i
 Kemal.run
