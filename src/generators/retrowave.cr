@@ -208,25 +208,22 @@ module ProceduralArt::Retrowave
 
         sun_wave_filter = ctx.filter do |f|
           f.id = "sun-filter"
-          f.x = -20
-          f.x_units = "%"
-          f.y = -20
-          f.y_units = "%"
-          f.width = 140
-          f.width_units = "%"
-          f.height = 140
-          f.height_units = "%"
+          f.x = -1000
+          f.y = -1000
+          f.width = 1500
+          f.height = 1001
 
           f.blur do |b|
-            b.standard_deviation = 7
+            b.edge_mode = "none"
+            b.standard_deviation = 5
             b.input = Celestine::Filter::SOURCE_GRAPHIC
             b.result = "sun-blur"
             b
           end
 
           f.merge do |m|
-            m.add_node(Celestine::Filter::SOURCE_GRAPHIC)
             m.add_node("sun-blur")
+            m.add_node(Celestine::Filter::SOURCE_GRAPHIC)
             m.result = "sun-filter-result"
             m
           end
