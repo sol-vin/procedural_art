@@ -2,7 +2,7 @@ version: 2.0
 shards:
   celestine:
     git: https://github.com/celestinecr/celestine.git
-    version: 0.7.9alpha+git.commit.b98da9545dbfd45442b80467fbe479b8f230d9ba
+    version: 0.8.0alpha+git.commit.ccac7c744018b9b21f26d03f33783ae6917ad77c
 
   exception_page:
     git: https://github.com/crystal-loot/exception_page.git

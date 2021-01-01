@@ -20,19 +20,19 @@ module ProceduralArt::SplashEffect
         f.y_units = "%"
 
         f.flood do |f|
-          f.flood_color = "#16B5FF"
+          f.color = "#16B5FF"
           f.result = "splash-color-blue"
           f
         end
 
         f.flood do |f|
-          f.flood_color = "#9800FF"
+          f.color = "#9800FF"
           f.result = "splash-color-violet"
           f
         end
 
         f.flood do |f|
-          f.flood_color = "#A64DFF"
+          f.color = "#A64DFF"
           f.result = "splash-color-light-violet"
           f
         end
