@@ -7,7 +7,11 @@ module ProceduralArt::SplashEffect
     perlin = PerlinNoise.new(seed &+ 1)
 
     Celestine.draw do |ctx|
-
+      ctx.view_box = {x: 0, y: 0, w: SIZE, h: SIZE}
+      ctx.width = 50
+      ctx.width_units = "%"
+      # ctx.height = 100
+      # ctx.height_units = "%"
       splash_filter = ctx.filter do |f|
         f.id = "splash-filter"
         f.width = 400
@@ -200,7 +204,7 @@ module ProceduralArt::SplashEffect
       ctx.text do |t|
         t.x = 100
         t.y = 120
-        t.text = "Hello World!"
+        t.text = "Hello"
         t.fill = "#16B5FF"
         t.color = "#16B5FF"
         t.font_size = 160

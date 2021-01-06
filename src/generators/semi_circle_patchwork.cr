@@ -42,6 +42,7 @@ module ProceduralArt::SemiCirclePatchwork
     colors = perlin.prng_item(100, COLORS, 4.2)
 
     Celestine.draw do |ctx|
+
       ctx.view_box = {x: 0, y: 0, w: SCREEN_WIDTH/2, h: SCREEN_HEIGHT/2}
 
       semicircle_left = ctx.path(define: true) do |path|
