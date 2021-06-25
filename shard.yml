@@ -14,7 +14,7 @@ dependencies:
     github: kemalcr/kemal
     branch: master
   perlin_noise:
-    github: redcodefinal/perlin_noise
+    github: sol-vin/perlin_noise
   celestine:
     github: celestinecr/celestine
 
